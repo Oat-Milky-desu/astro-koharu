@@ -68,7 +68,7 @@ pnpm knip             # Find unused files/dependencies
 pnpm koharu              # Interactive menu
 pnpm koharu backup       # Backup blog content and config (--full for complete backup)
 pnpm koharu restore      # Restore from backup (--latest, --dry-run, --force)
-pnpm koharu update       # Update theme from upstream (--check, --skip-backup, --force)
+pnpm koharu update       # Update theme from upstream (--check, --skip-backup, --force, --rebase)
 pnpm koharu generate     # Generate content assets (interactive menu)
 pnpm koharu generate lqips        # Generate LQIP image placeholders
 pnpm koharu generate similarities # Generate semantic similarity vectors
@@ -137,6 +137,8 @@ pages/ → components/ → hooks/ → lib/ → constants/
 ### Key Concepts
 
 **Content System**: Blog posts in `src/content/blog/` using Astro Content Collections. Hierarchical categories supporting `'工具'` or `['笔记', '前端', 'React']`.
+
+**Featured Series**: Special category-based content series with dedicated pages and homepage highlights. Configured via `featuredSeries` in `config/site.yaml`. Each series requires a unique `slug` (must not conflict with reserved routes) and `categoryName`. Supports multiple series, individual enable/disable, and homepage highlight control. Dynamic routes generated at `[seriesSlug].astro`.
 
 **Theme System**: Dark/light toggle with localStorage, inline check in `<head>` prevents FOUC.
 

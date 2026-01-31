@@ -32,9 +32,13 @@
 
 ## 部署
 
-### Vercel 一键部署
+支持 **Vercel**、**Cloudflare Pages**、**Netlify** 等主流平台自动部署，会根据环境自动选择适配器，未识别平台则使用 Node.js 保底适配器（适合 Docker 或自托管）。
+
+### 一键部署
 
 [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/cosZone/astro-koharu&project-name=astro-koharu&repository-name=astro-koharu)
+[![Deploy to Netlify](https://www.netlify.com/img/deploy/button.svg)](https://app.netlify.com/start/deploy?repository=https://github.com/cosZone/astro-koharu)
+[![Deploy to Cloudflare Pages](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https://github.com/cosZone/astro-koharu)
 
 ### Docker 部署
 
@@ -77,9 +81,11 @@ pnpm dev
 - 基于 Astro 5.x，静态站点生成，性能优异
 - 优雅的深色/浅色主题切换
 - 基于 Pagefind 的无后端全站搜索
+- **可更换评论系统**：支持 Waline（推荐）、Giscus、Remark42 三种评论组件，配置文件一键切换，主题自动跟随
 - 完整的 Markdown 增强功能（GFM、代码高亮、自动目录、Mermaid 图表、Infographic 信息图）
 - 灵活的多级分类与标签系统
-- [可开关] 特色周刊/系列文章支持
+- [可开关] 多系列文章支持（周刊、书摘等自定义系列，支持自定义 URL slug）
+  > 💡 **说明**：featuredSeries 适合文章数量较多的分类，将其从首页主列表分离以避免刷屏。系列文章仅最新一篇在首页高亮，其余通过系列专属页面访问，但在归档、分类、标签等页面仍正常展示。
 - 响应式设计
 - 草稿与置顶功能
 - 阅读进度条与阅读时间估算
@@ -94,6 +100,7 @@ pnpm dev
 - 无后端站点公告系统：可通过配置文件管理公告，支持时间控制、多条公告堆叠、自定义颜色、hover 已读
 - 有样式的 [RSS](https://blog.cosine.ren/rss.xml) 订阅源链接
 - **Koharu CLI**：交互式命令行工具，支持备份/还原、内容生成、备份管理
+- 无后端 CMS（本地编辑器 / 浏览器编辑）：文章页支持在 `config/cms.yaml` 启用编辑按钮，在 dev 模式内置浏览器编辑器与本地编辑器协议跳转（VS Code / Cursor / Zed），具体配置见 `config/cms.yaml`，后续考虑拓展更多 cms 功能，一键修改文件路径等。
 
 ## Koharu CLI
 
@@ -101,6 +108,7 @@ pnpm dev
 
 ```bash
 pnpm koharu              # 交互式主菜单
+pnpm koharu new          # 新建内容（文章/友链）
 pnpm koharu backup       # 备份博客内容和配置
 pnpm koharu restore      # 从备份恢复
 pnpm koharu update       # 更新主题
@@ -108,6 +116,33 @@ pnpm koharu generate     # 生成内容资产 (LQIP, 相似度, AI 摘要)
 pnpm koharu clean        # 清理旧备份
 pnpm koharu list         # 查看所有备份
 ```
+
+### 新建内容
+
+快速创建博客文章和友链：
+
+```bash
+# 交互式选择创建类型
+pnpm koharu new
+
+# 或直接指定类型
+pnpm koharu new post     # 新建博客文章（交互式输入标题、分类、标签等）
+pnpm koharu new friend   # 新建友情链接（自动追加到 config/site.yaml）
+```
+
+**新建文章功能**：
+
+- 自动生成拼音 slug
+- 选择已有分类
+- 支持多标签
+- 检查文件重复
+- 自动创建 frontmatter
+
+**新建友链功能**：
+
+- 交互式输入友站信息
+- 自动追加到配置文件
+- 保留 YAML 格式和注释
 
 ### 备份与还原
 
@@ -140,7 +175,18 @@ pnpm koharu update --check
 
 # 跳过备份直接更新
 pnpm koharu update --skip-backup
+
+# 更新到指定版本
+pnpm koharu update --tag v2.1.0
+
+# 使用 rebase 模式（重写历史，强制备份）
+pnpm koharu update --rebase
+
+# 预览 rebase 操作（不实际执行）
+pnpm koharu update --rebase --dry-run
 ```
+
+> **💡 更新说明：** 默认使用 **squash merge** 方式更新，将上游所有提交压缩为单个提交，保持你的提交历史干净线性。
 
 ### 内容生成
 
@@ -166,11 +212,26 @@ pnpm koharu generate all          # 生成全部
 - 分类映射（中文分类名 → URL slug）
 - 友链列表
 - 公告系统
-- 评论系统（Remark42）
+- **评论系统**（Waline / Giscus / Remark42，推荐使用 Waline）
 - 数据统计（Umami）
 - 圣诞特辑开关
+- 本地 CMS 配置（`config/cms.yaml`，用于浏览器编辑/本地编辑器协议跳转）
 
 详细配置说明请参考文档。
+
+### 评论系统切换
+
+在 `config/site.yaml` 中通过 `comment.provider` 字段一键切换评论系统：
+
+```yaml
+comment:
+  provider: waline # 'waline' | 'giscus' | 'remark42' | 'none'
+  waline:
+    serverURL: https://your-waline-server.vercel.app
+    # ... 其他配置
+```
+
+**推荐使用 Waline**：自部署简单、功能丰富（Markdown、表情、邮件通知）、带访问量统计。详细配置请参考[完整使用指南](/src/content/blog/tools/astro-koharu-guide.md#如何添加评论功能)。
 
 ## 文档
 
@@ -218,3 +279,11 @@ pnpm koharu generate all          # 生成全部
 - [纸鹿摸鱼处](https://blog.zhilu.site/)
 
 ...
+
+## Star History
+
+[![Star History Chart](https://api.star-history.com/svg?repos=cosZone/astro-koharu&type=date&legend=top-left)](https://www.star-history.com/#cosZone/astro-koharu&type=date&legend=top-left)
+
+## License
+
+GNU Affero General Public License version 3 (AGPL-3.0)

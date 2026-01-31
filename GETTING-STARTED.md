@@ -57,6 +57,7 @@ site:
   description: 博客简介            # 一句话介绍
   author: 你的名字                # 文章作者
   url: https://your-domain.com/   # 部署后的域名
+  defaultOgImage: /img/avatar.webp # 默认 Open Graph 图片
   startYear: 2024                 # 建站年份
   avatar: /img/avatar.webp        # 头像路径
   showLogo: true                  # 是否显示 logo
@@ -257,6 +258,8 @@ pnpm koharu update --check
 # 跳过备份直接更新
 pnpm koharu update --skip-backup
 ```
+
+> **💡 更新说明：** 默认使用 **squash merge** 方式更新，将上游所有提交压缩为单个提交，保持你的提交历史干净线性。
 
 更新过程中会自动：
 1. 检查工作区状态
