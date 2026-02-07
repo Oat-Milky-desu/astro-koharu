@@ -12,7 +12,7 @@
 # =============================================================================
 site:
   title: Milkyの博客 # 网站名称
-  alternate: Milky # 网站英文名称 用于页脚、Logo、@ handle 等
+  alternate: MilkyのBlog # 网站英文名称 用于页脚、Logo、@ handle 等
   subtitle: 菲比啾比 # 网站副标题
   name: Oat_Milky # 作者名称 - 请修改为你的名字
   description: 记录生活，分享技术 # 网站描述
